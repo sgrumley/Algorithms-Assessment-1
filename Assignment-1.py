@@ -76,6 +76,7 @@ def algorithm(n, total, p, n_val):
             sum = summedValues(p, n_val)
             # find the difference max difference needed to find a soloution
             limit = total - sum
+            print(total, "-", sum)
             #next value - current value
             diff = p[n_val[-1]+1] - p[n_val[-1]]
 
@@ -111,19 +112,25 @@ exportedSol =[]
 algorithm(n, total, p, n_val)
 
 """ total = 16, n=3 """
+print()
+print()
+print()
+print()
 n = 3
 total = 16
 p = getPrimeNums(total)
 
+
 primeGap = total - p[-1]
 primeGapList = []
+n_val1 = [0 for i in range(n-1)]
 
 for i in range(len(p)):
     if p[i] > primeGap:
         break
     primeGapList.append(p[i])
 
-algorithm(n-1, primeGap, p, n_val)
+algorithm(n-1, primeGap, primeGapList, n_val1)
 
 print("prime gap list: ", primeGapList)
-print("prime gap", primeGap)
+print("prime gap", total, primeGap)
