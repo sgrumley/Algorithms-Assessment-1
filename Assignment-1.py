@@ -1,6 +1,16 @@
 import time
 import copy
 
+def readIn():
+    with open("input.txt") as f:
+        return [line.split() for line in f]
+
+
+def writeOut(writeData):
+    with open("output.txt", "w") as file:
+        for i in range(len(writeData)):
+            file.write(str(writeData[i]) + "\n")
+
 def colCheck(p, n_val):
     max = p[-1]
     shell = None
@@ -17,7 +27,6 @@ def colCheck(p, n_val):
 def summedValues(p, n_val):
     sum = 0
     for j in range(len(n_val)):
-        #print("p value ",j,":", p[n_val[j]])
         sum += p[n_val[j]]
     return sum
 
@@ -91,7 +100,6 @@ def algorithm(n, total, p, n_val):
             sum = summedValues(p, n_val)
             # find the difference max difference needed to find a soloution
             limit = total - sum
-            #print(total, "-", sum)
             #next value - current value
             diff = p[n_val[-1]+1] - p[n_val[-1]]
 
@@ -122,26 +130,14 @@ def algorithm(n, total, p, n_val):
 #print("Total times sum ran:", sumcount)
     return exportedSol
 
-def readIn():
-    readValues = []
-    with open("input.txt","r") as f:
-        for line in f:
-            readValues.append(line.strip())
-    return readValues
-
-def writeOut(writeData):
-    print(writeData)
-    with open("output.txt", "w") as file:
-        for i in range(len(writeData)):
-            file.write(str(writeData[i]) + "\n")
-
 
 def runFunc(n, total):
-    start = time.time()
     p = getPrimeNums(total)
     if n == 1:
         if total == p[-1]:
             return 1
+        else:
+            return 0
 
     """ Results for highest prime number """
     n_valgap = [0 for i in range(n-1)]
@@ -155,55 +151,47 @@ def runFunc(n, total):
 
     for i in range(len(maxPrimeCominations)):
         soloutions.append(maxPrimeCominations[i])
-    print(soloutions)
-    end = time.time()
-    timer1 = end-start
-    print(timer1)
+    print(n, soloutions)
     length = len(soloutions)
     return length
 
-total = 5
-n = 1
-t = runFunc(n,total)
-print(t)
-
-
 """ driver """
-"""
 readValues = readIn()
-#print(readValues)
+print("read values",readValues)
 printVals = []
 for j in range(len(readValues)):
     determineInput = len(readValues[j])
-    print(determineInput)
+    print()
+    print(readValues[j])
+    start = time.time()
     if determineInput == 1:
         lengthSum = 0
         total = int(readValues[j][0])
-        for i in range(2,total):
+        for i in range(1,total+1):
             length = runFunc(i,total)
-            print("nt=",i)
+            #print("nt=",i)
             lengthSum += length
-        printVals.append(copy.deepcopy(lengthSum))
+        printVals.append(lengthSum)
+        print(time.time() - start)
+
+    elif determineInput == 2:
+        total = int(readValues[j][0])
+        n = int(readValues[j][1])
+        length = runFunc(n, total)
+        printVals.append(length)
+        print(time.time() - start)
 
     elif determineInput == 3:
-        total = int(readValues[j][0])
-        n = int(readValues[j][2])
-        print("ns=",n )
-        length = runFunc(n, total)
-        printVals.append(copy.deepcopy(length))
-
-    elif determineInput == 5:
         timerSum = 0
         lengthSum = 0
         total = int(readValues[j][0])
-        nMin = int(readValues[j][2])
-        nMax = int(readValues[j][4]) + 1
-        for i in range(nMin, nMax):
-            print("nr=",i)
+        nMin = int(readValues[j][1])
+        nMax = int(readValues[j][2])
+        for i in range(nMin, nMax + 1):
             length = runFunc(i,total)
             lengthSum += length
-        printVals.append(copy.deepcopy(lengthSum))
-
+        printVals.append(lengthSum)
+        print(time.time() - start)
+print()
 print(printVals)
 writeOut(printVals)
-"""
