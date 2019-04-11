@@ -11,6 +11,29 @@ def writeOut(writeData):
         for i in range(len(writeData)):
             file.write(str(writeData[i]) + "\n")
 
+def differenceArray(data):
+    response = []
+    for i in range(len(data) -1):
+        response.append(data[i+1] - data[i])
+    print(response)
+
+def binarySearch(comp, data):
+    left = 0
+    right = len(data)
+    while left <= right:
+        mid = left + (right - 1)//2
+        if data[mid] == comp:
+            return True
+        elif data[mid] < comp:
+            left = mid + 1
+        else:
+            r = mid - 1
+    return False
+
+
+
+    return found
+
 def colCheck(p, n_val):
     max = p[-1]
     shell = None
@@ -55,32 +78,22 @@ def getPrimeGap(total, p):
             break
     return primeGap, primeGapList
 
-def appendSoloution(maxPrimeCominations, p):
-    for i in range(len(maxPrimeCominations)):
-        maxPrimeCominations[i].append(p)
-    return maxPrimeCominations
 
-def algorithm(n, total, p, n_val):
-    exportedSol = []
-    count = 0
-    sumcount = 0
+def algorithm(n, total, p):
+    exportedSol = 0
     limit = 0
+    n_val = [0 for i in range(n)]
     """while the first value is not maxed out"""
     while(n_val[0] != len(p)-1):
         atLimit = False
-        count +=1
         #check if a col is maxed
         atLimit, shell = colCheck(p, n_val)
-
-        """while a col is maxed increment the column before it"""
+        #use sumcount to find out how many times the nested while runs
+        sumcount = 0
+        #while a col is maxed increment the column before it"""
         while(atLimit == True):
             # if shell == all soloutions checked
             sumcount += 1
-            #if summedValues(p, n_val) == total:
-                #tempSol = []
-                #for x in range(n):
-                #    tempSol.append(p[n_val[x]])
-                #exportedSol.append(tempSol)
             if shell == 0:
                 break
             if atLimit:
@@ -94,7 +107,7 @@ def algorithm(n, total, p, n_val):
             #check to make sure no other colums are maxed
             atLimit, shell = colCheck(p, n_val)
 
-        """compute differences between number needed and next number given"""
+        #compute differences between number needed and next number given
         if atLimit == False:
             # sum values of comination
             sum = summedValues(p, n_val)
@@ -103,12 +116,10 @@ def algorithm(n, total, p, n_val):
             #next value - current value
             diff = p[n_val[-1]+1] - p[n_val[-1]]
 
-            """Check if goal state and/or increment"""
+            #Check if goal state and/or increment
             if limit == 0:
                 tempSol = []
-                for x in range(n):
-                    tempSol.append(p[n_val[x]])
-                exportedSol.append(tempSol)
+                exportedSol += 1
                 try:
                     n_val[-2] += 1
                     n_val[-1] = n_val[-2]
@@ -122,15 +133,9 @@ def algorithm(n, total, p, n_val):
             #else keep incrementing the right most column
             else:
                 n_val[-1] += 1
-            #print("Sum: ", sum, " limit: ", limit, "Diff: ", diff)
-            #print("------- iteration: ",count+1, "-------" )
-
-    #print("results:",exportedSol)
-    #print(p)
-#print("Total times sum ran:", sumcount)
     return exportedSol
 
-
+""" Controlled function to run a complete cycle of n """
 def runFunc(n, total):
     p = getPrimeNums(total)
     if n == 1:
@@ -138,22 +143,13 @@ def runFunc(n, total):
             return 1
         else:
             return 0
-
-    """ Results for highest prime number """
-    n_valgap = [0 for i in range(n-1)]
+    # Results for highest prime number
     primeGap, primeGapList = getPrimeGap(total, p)
-    maxPrimeCominations = algorithm(n-1, primeGap, primeGapList, n_valgap)
-    maxPrimeCominations = appendSoloution(maxPrimeCominations, p[-1])
-
-    """Results for every other prime number"""
-    n_val = [0 for i in range(n)]
-    soloutions = algorithm(n, total, p, n_val)
-
-    for i in range(len(maxPrimeCominations)):
-        soloutions.append(maxPrimeCominations[i])
-    print(n, soloutions)
-    length = len(soloutions)
-    return length
+    soloutions = algorithm(n-1, primeGap, primeGapList)
+    #Results for every other prime number + highest prime number results
+    soloutions += algorithm(n, total, p)
+    print("n = ", n, "soloutions", soloutions)
+    return soloutions
 
 """ driver """
 readValues = readIn()
@@ -169,16 +165,17 @@ for j in range(len(readValues)):
         total = int(readValues[j][0])
         for i in range(1,total+1):
             length = runFunc(i,total)
-            #print("nt=",i)
             lengthSum += length
         printVals.append(lengthSum)
         print(time.time() - start)
+        print("total:", lengthSum)
 
     elif determineInput == 2:
         total = int(readValues[j][0])
         n = int(readValues[j][1])
         length = runFunc(n, total)
         printVals.append(length)
+        print("total:", length)
         print(time.time() - start)
 
     elif determineInput == 3:
@@ -192,6 +189,13 @@ for j in range(len(readValues)):
             lengthSum += length
         printVals.append(lengthSum)
         print(time.time() - start)
+        print("total:", lengthSum)
 print()
 print(printVals)
 writeOut(printVals)
+#cn implement difference array
+he = [1,2,3,5,7,11,13,17]
+differenceArray(he)
+comp = 4
+data = [1,2,3,5,7]
+print("found?:",binarySearch(comp, data))
