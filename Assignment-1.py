@@ -15,24 +15,22 @@ def differenceArray(data):
     response = []
     for i in range(len(data) -1):
         response.append(data[i+1] - data[i])
-    print(response)
+    return(response)
 
 def binarySearch(comp, data):
     left = 0
-    right = len(data)
+    right = len(data) - 1
     while left <= right:
-        mid = left + (right - 1)//2
+        mid = (left + right)//2
+        print("mid", mid)
         if data[mid] == comp:
             return True
         elif data[mid] < comp:
             left = mid + 1
         else:
-            r = mid - 1
+            right = mid - 1
     return False
 
-
-
-    return found
 
 def colCheck(p, n_val):
     max = p[-1]
@@ -54,10 +52,12 @@ def summedValues(p, n_val):
     return sum
 
 def getPrimeNums(total):
-    dataSet = [1]
-    for i in range (2, total + 1):
+    dataSet = [1,2]
+    for i in range (3, total + 1):
         if isPrime(i):
             dataSet.append(i)
+        i += 1
+    print(dataSet)
     return dataSet
 
 def isPrime(total):
@@ -79,7 +79,7 @@ def getPrimeGap(total, p):
     return primeGap, primeGapList
 
 
-def algorithm(n, total, p):
+def algorithm(n, total, p, difArr):
     exportedSol = 0
     limit = 0
     n_val = [0 for i in range(n)]
@@ -114,7 +114,11 @@ def algorithm(n, total, p):
             # find the difference max difference needed to find a soloution
             limit = total - sum
             #next value - current value
-            diff = p[n_val[-1]+1] - p[n_val[-1]]
+            #diff = p[n_val[-1]+1] - p[n_val[-1]]
+            #diff = difArr[n_val[-1]]
+            #print("dif by calc",diff)
+            #print("dif by lookup",difArr[n_val[-1]])
+            #print()
 
             #Check if goal state and/or increment
             if limit == 0:
@@ -127,7 +131,7 @@ def algorithm(n, total, p):
                     n_val[-1] += 1
                     #pass
             #if jump in sum is bigger than the remainder needed -> roll back a value and increase
-            elif diff > limit:
+            elif difArr[n_val[-1]] > limit:
                 n_val[-2] += 1
                 n_val[-1] = n_val[-2]
             #else keep incrementing the right most column
@@ -138,6 +142,8 @@ def algorithm(n, total, p):
 """ Controlled function to run a complete cycle of n """
 def runFunc(n, total):
     p = getPrimeNums(total)
+
+    #print("here",difArr)
     if n == 1:
         if total == p[-1]:
             return 1
@@ -145,9 +151,11 @@ def runFunc(n, total):
             return 0
     # Results for highest prime number
     primeGap, primeGapList = getPrimeGap(total, p)
-    soloutions = algorithm(n-1, primeGap, primeGapList)
+    difArr = differenceArray(primeGapList)
+    soloutions = algorithm(n-1, primeGap, primeGapList, difArr)
     #Results for every other prime number + highest prime number results
-    soloutions += algorithm(n, total, p)
+    difArr = differenceArray(p)
+    soloutions += algorithm(n, total, p, difArr)
     print("n = ", n, "soloutions", soloutions)
     return soloutions
 
@@ -196,6 +204,8 @@ writeOut(printVals)
 #cn implement difference array
 he = [1,2,3,5,7,11,13,17]
 differenceArray(he)
-comp = 4
+
+
+comp = 100
 data = [1,2,3,5,7]
-print("found?:",binarySearch(comp, data))
+binarySearch(comp, data)
