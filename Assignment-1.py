@@ -123,7 +123,6 @@ def algorithm(n, total, p, difArr):
             limit = total - sum
             #Check if goal state and/or increment
             if limit == 0:
-                tempSol = []
                 numSolutions += 1
                 try:
                     n_val[-2] += 1
